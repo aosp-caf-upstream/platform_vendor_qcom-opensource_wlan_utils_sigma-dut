@@ -774,6 +774,8 @@ int main(int argc, char *argv[])
 	sigma_dut.dpp_conf_id = -1;
 	sigma_dut.dpp_local_bootstrap = -1;
 	sigma_dut.sta_nss = 2; /* Make default nss 2 */
+	sigma_dut.trans_proto = NAN_TRANSPORT_PROTOCOL_DEFAULT;
+	sigma_dut.trans_port = NAN_TRANSPORT_PORT_DEFAULT;
 	set_defaults(&sigma_dut);
 
 	for (;;) {
@@ -1094,7 +1096,6 @@ int main(int argc, char *argv[])
 	free(sigma_dut.rsne_override);
 	free(sigma_dut.ap_sae_groups);
 	free(sigma_dut.dpp_peer_uri);
-	free(sigma_dut.ap_tnc_url);
 #ifdef NL80211_SUPPORT
 	nl80211_deinit(&sigma_dut, sigma_dut.nl_ctx);
 #endif /* NL80211_SUPPORT */

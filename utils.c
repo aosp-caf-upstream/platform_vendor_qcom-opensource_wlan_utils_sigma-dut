@@ -95,9 +95,10 @@ enum sigma_program sigma_program_to_enum(const char *prog)
 	if (strcasecmp(prog, "HS2") == 0)
 		return PROGRAM_HS2;
 	if (strcasecmp(prog, "HS2_R2") == 0 ||
-	    strcasecmp(prog, "HS2-R2") == 0 ||
-	    strcasecmp(prog, "HS2-R3") == 0)
+	    strcasecmp(prog, "HS2-R2") == 0)
 		return PROGRAM_HS2_R2;
+	if (strcasecmp(prog, "HS2-R3") == 0)
+		return PROGRAM_HS2_R3;
 	if (strcasecmp(prog, "WFD") == 0)
 		return PROGRAM_WFD;
 	if (strcasecmp(prog, "DisplayR2") == 0)
@@ -239,6 +240,14 @@ unsigned int freq_to_channel(unsigned int freq)
 }
 
 
+int is_ipv6_addr(const char *str)
+{
+	struct sockaddr_in6 addr;
+
+	return inet_pton(AF_INET6, str, &(addr.sin6_addr));
+}
+
+
 void convert_mac_addr_to_ipv6_lladdr(u8 *mac_addr, char *ipv6_buf,
 				     size_t buf_len)
 {
@@ -247,6 +256,27 @@ void convert_mac_addr_to_ipv6_lladdr(u8 *mac_addr, char *ipv6_buf,
 	snprintf(ipv6_buf, buf_len, "fe80::%02x%02x:%02xff:fe%02x:%02x%02x",
 		 temp, mac_addr[1], mac_addr[2],
 		 mac_addr[3], mac_addr[4], mac_addr[5]);
+}
+
+
+size_t convert_mac_addr_to_ipv6_linklocal(const u8 *mac_addr, u8 *ipv6)
+{
+	int i;
+
+	ipv6[0] = 0xfe;
+	ipv6[1] = 0x80;
+	for (i = 2; i < 8; i++)
+		ipv6[i] = 0;
+	ipv6[8] = mac_addr[0] ^ 0x02;
+	ipv6[9] = mac_addr[1];
+	ipv6[10] = mac_addr[2];
+	ipv6[11] = 0xff;
+	ipv6[12] = 0xfe;
+	ipv6[13] = mac_addr[3];
+	ipv6[14] = mac_addr[4];
+	ipv6[15] = mac_addr[5];
+
+	return 16;
 }
 
 
