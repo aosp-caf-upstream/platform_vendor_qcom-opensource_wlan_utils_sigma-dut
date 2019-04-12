@@ -6701,9 +6701,6 @@ int cmd_ap_config_commit(struct sigma_dut *dut, struct sigma_conn *conn,
 	FILE *f;
 	const char *ifname;
 	char buf[500];
-#if defined (ANDROID) || defined (LINUX_EMBEDDED)
-	char wpa_buf[256];
-#endif /* ANDROID || LINUX_EMBEDDED */
 	char path[100];
 	enum driver_type drv;
 	const char *key_mgmt;
@@ -6851,13 +6848,6 @@ int cmd_ap_config_commit(struct sigma_dut *dut, struct sigma_conn *conn,
 	     drv == DRIVER_LINUX_WCN) &&
 	    (dut->ap_mode == AP_11ac || dut->ap_mode == AP_11na)) {
 		if (dut->ap_countrycode[0]) {
-#if defined (ANDROID) || defined (LINUX_EMBEDDED)
-			snprintf(wpa_buf, sizeof(wpa_buf), "DRIVER COUNTRY %s", dut->ap_countrycode);
-			if (wpa_command(get_station_ifname(), wpa_buf) < 0)
-				sigma_dut_print(dut, DUT_MSG_ERROR, "Failed to set country code");
-			else
-				sigma_dut_print(dut, DUT_MSG_INFO, "Successfully set country code to %s", dut->ap_countrycode);
-#endif /* ANDROID || LINUX_EMBEDDED */
 			fprintf(f, "country_code=%s\n", dut->ap_countrycode);
 			fprintf(f, "ieee80211d=1\n");
 			fprintf(f, "ieee80211h=1\n");
